@@ -1,6 +1,7 @@
 ﻿import { useEffect } from "react";
 
 import { useMemo, useState } from "react";
+import { FiArrowUp, FiArrowUpRight, FiHeart, FiLock, FiX } from "react-icons/fi";
 
 type PromptItem = {
   id: number;
@@ -20,7 +21,7 @@ const prompts: PromptItem[] = [
 
     name: "Brinde com Três Hambúrgueres Artesanais",
 
-    text: "",
+    text: "Transforme esta foto de hambúrguer em uma imagem gastronômica profissional e apetitosa. Preserve exatamente o formato, os ingredientes e a identidade do produto. Use iluminação lateral suave, contraste equilibrado, textura realista, fundo limpo e composição editorial premium. O hambúrguer deve permanecer como protagonista, sem aparência artificial ou elementos inventados.",
 
     category: "FoodLab",
 
@@ -308,34 +309,99 @@ const styles = `
 
 
 /* FoodLab — comparação Antes / Depois */
-#foodlab-before-after { padding-block: 44px 76px; margin: 0; min-height: 0; height: auto; }
+#foodlab-before-after { padding: 44px 28px 76px; margin: 0; min-height: 0; height: auto; background: var(--bg); color: var(--text); border-radius: 24px; }
+#foodlab-before-after .fl-section-heading h2 { color: var(--text); }
+#foodlab-before-after .fl-section-heading > p { color: var(--muted); }
 #metodo { display: flow-root; margin: 0; min-height: 0; height: auto; padding-bottom: 18px; }
 #metodo + #foodlab-before-after { display: flow-root; margin: 0; min-height: 0; height: auto; }
 #metodo + #foodlab-before-after { margin-top: 0; padding-top: 24px; }
 .fl-ba-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
 .fl-ba-card { min-width: 0; overflow: hidden; border: 1px solid var(--stroke); border-radius: 18px; background: var(--panel); }
-.fl-ba-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; aspect-ratio: 16 / 10; overflow: hidden; background: #101210; }
+.fl-ba-grid { overflow: hidden; padding: 4px 2px 14px; }
+.fl-ba-grid::-webkit-scrollbar { display: none; }
+.fl-ba-track { display: flex; width: max-content; gap: 18px; animation: fl-before-after-scroll 30s linear infinite; will-change: transform; }
+.fl-ba-grid:hover .fl-ba-track { animation-play-state: paused; }
+@keyframes fl-before-after-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 9px)); } }
+@media (prefers-reduced-motion: reduce) { .fl-ba-track { animation: none; } }
+.fl-ba-card { flex: 0 0 min(390px, 82vw); scroll-snap-align: start; min-width: 0; overflow: hidden; border: 1px solid var(--stroke); border-radius: 20px; background: var(--bg); box-shadow: 0 12px 30px #00000018; color: var(--text); }
+.fl-ba-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 14px 14px 0; background: var(--bg); overflow: hidden; }
 .fl-ba-side { min-width: 0; min-height: 0; position: relative; overflow: hidden; }
-.fl-ba-side + .fl-ba-side { border-left: 2px solid var(--accent); }
-.fl-ba-side img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: cover; }
-.fl-ba-label { position: absolute; top: 12px; left: 12px; z-index: 1; padding: 7px 10px; border: 1px solid #ffffff24; border-radius: 7px; background: #101210df; color: #f6f4ed; font: 800 10px 'DM Sans', sans-serif; letter-spacing: 1.3px; }
-.fl-ba-label.after { background: var(--accent); color: #1c130d; border-color: transparent; }
-.fl-ba-caption { padding: 14px 16px 16px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.fl-ba-side { display: flex; min-width: 0; flex-direction: column; gap: 8px; overflow: hidden; }
+.fl-ba-side img { display: block; width: 100%; aspect-ratio: 1 / 1.18; object-fit: cover; border-radius: 12px; }
+.fl-ba-label { order: -1; color: #73756f; font: 800 10px 'DM Sans', sans-serif; letter-spacing: 1.5px; }
+.fl-ba-label.after { color: #ff8b45; }
+.fl-ba-caption { padding: 14px 16px 18px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .fl-ba-caption strong { display: block; margin-bottom: 4px; color: var(--text); font: 700 16px Outfit, sans-serif; }
+.fl-prompt-action { display: flex; width: 100%; margin-top: 15px; align-items: center; justify-content: center; border: 0; border-radius: 10px; padding: 11px 14px; background: var(--accent); color: #1c130d; font-weight: 800; }
+.fl-prompt-action.locked { background: #f1aa22; }
+.fl-modal-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: #000000b8; }
+.fl-modal { display: flex; width: min(1040px, calc(100vw - 48px)); height: min(820px, calc(100vh - 48px)); max-height: calc(100vh - 48px); flex-direction: column; overflow: hidden; border: 1px solid #424640; border-radius: 20px; background: var(--panel); box-shadow: 0 24px 80px #00000066; }
+.fl-modal-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 22px; border-bottom: 1px solid var(--stroke); }
+.fl-modal-toolbar h3 { min-width: 0; margin: 0; color: var(--text); font: 700 18px/1.2 Outfit, sans-serif; }
+.fl-modal-close { border: 0; border-radius: 9px; padding: 8px 11px; background: #292c29; color: var(--text); font-weight: 700; }
+.fl-prompt-text { min-height: 0; min-width: 0; flex: 1; overflow-y: auto; overflow-wrap: anywhere; white-space: pre-wrap; padding: 24px 28px 28px; color: #d7d8d1; font-size: 14px; line-height: 1.75; }
+.fl-modal-content { display: grid; grid-template-columns: minmax(320px, 360px) minmax(0, 1fr); min-height: 0; flex: 1; overflow: hidden; }
+.fl-modal-fields { display: grid; align-content: start; gap: 14px; min-width: 0; overflow-y: auto; padding: 24px; border-right: 1px solid var(--stroke); }
+.fl-fields-title { margin: 0 0 4px; color: var(--text); font: 700 22px/1.15 Outfit, sans-serif; }
+.fl-prompt-panel { display: flex; min-height: 0; min-width: 0; flex-direction: column; overflow: hidden; }
+.fl-prompt-panel .fl-modal-toolbar { border-bottom: 1px solid var(--stroke); }
+.fl-field { display: grid; gap: 6px; }
+.fl-field label { color: #b7bab1; font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.fl-field input,.fl-field select { box-sizing: border-box; width: 100%; min-width: 0; border: 1px solid #424640; border-radius: 8px; padding: 11px 12px; background: #202220; color: var(--text); outline: none; }
+.fl-field input:focus,.fl-field select:focus { border-color: var(--accent); }
+.fl-modal-fields::-webkit-scrollbar,.fl-prompt-text::-webkit-scrollbar { width: 8px; }
+.fl-modal-fields::-webkit-scrollbar-thumb,.fl-prompt-text::-webkit-scrollbar-thumb { border-radius: 8px; background: #4a5049; }
+@media(max-width:720px){.fl-modal{width:calc(100vw - 24px);height:calc(100vh - 24px);max-height:calc(100vh - 24px)}.fl-modal-toolbar{padding:16px 18px}.fl-modal-content{grid-template-columns:1fr;flex:1;overflow-y:auto}.fl-modal-fields{max-height:none;padding:18px;border-right:0;border-bottom:1px solid var(--stroke)}.fl-prompt-panel{min-height:360px}.fl-prompt-text{height:300px;max-height:none;padding:18px}.fl-fields-title{font-size:20px}}
 @media (max-width: 720px) {
   #metodo { padding-top: 42px; padding-bottom: 12px; }
   #foodlab-before-after { padding-top: 18px; padding-bottom: 48px; }
   #metodo + #foodlab-before-after { margin-top: 0; }
-  .fl-ba-grid { grid-template-columns: 1fr; gap: 14px; }
+  .fl-ba-track { gap: 14px; animation-duration: 24s; }
   .fl-ba-images { aspect-ratio: 16 / 10; }
   .fl-ba-label { top: 8px; left: 8px; padding: 6px 8px; font-size: 9px; }
   .fl-ba-caption { padding: 12px 13px 14px; }
 }
-`;
-
-function safeText(value: string) {
-  return value.trim();
+.fl-cardbody p { min-height: 0; line-height: 1.45; }
+.fl-cards { max-width: 1120px; margin-inline: auto; }
+.fl-ba-grid { grid-template-columns: 1fr; }
+.fl-ba-track { animation-duration: 48s; }
+.fl-prompt-action { min-height: 40px; padding: 9px 12px; font-size: 12px; }
+.fl-prompt-action svg { flex: 0 0 auto; }
+.fl-modal-close { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 720px) {
+  .fl-shell { padding-inline: 18px; }
+  .fl-section { padding-block: 48px; }
+  .fl-section-heading { display: block; margin-bottom: 22px; }
+  .fl-section-heading h2 { margin-top: 8px; }
+  .fl-section-heading > p { margin-top: 14px; line-height: 1.55; }
+  .fl-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .fl-card-image { height: 150px; }
+  .fl-cardbody { padding: 12px; }
+  .fl-cardbody h3 { font-size: 15px; line-height: 1.2; }
+  .fl-cardbody p { margin-bottom: 12px; font-size: 11px; }
+  .fl-cardbottom { display: block; }
+  .fl-prompt-action { width: 100%; }
+  .fl-ba-track { gap: 12px; animation-duration: 52s; }
+  .fl-ba-card { flex-basis: min(300px, 78vw); }
+  .fl-ba-images { gap: 7px; padding: 10px 10px 0; }
+  .fl-ba-side img { aspect-ratio: 1 / 1.08; border-radius: 9px; }
+  .fl-ba-caption { padding: 10px 12px 13px; font-size: 11px; line-height: 1.45; }
+  .fl-ba-caption strong { margin-bottom: 3px; font-size: 14px; }
+  .fl-modal-backdrop { padding: 12px; }
+  .fl-modal { width: 100%; height: auto; max-height: 92vh; border-radius: 16px; }
+  .fl-modal-toolbar { padding: 12px 14px; }
+  .fl-modal-toolbar h3 { font-size: 16px; }
+  .fl-modal-close { padding: 6px 8px; font-size: 12px; }
+  .fl-modal-content { overflow: hidden; }
+  .fl-modal-fields { max-height: 43vh; overflow-y: auto; gap: 10px; padding: 14px; }
+  .fl-fields-title { font-size: 18px; }
+  .fl-field { gap: 4px; }
+  .fl-field input, .fl-field select { padding: 9px 10px; font-size: 13px; }
+  .fl-prompt-panel { min-height: 0; }
+  .fl-prompt-text { height: auto; max-height: 30vh; padding: 14px; font-size: 13px; line-height: 1.55; }
+  .fl-prompt-action { min-height: 36px; padding: 8px 10px; }
 }
+`;
 
 export default function FoodLabStudioPage() {
   const [query, setQuery] = useState("");
@@ -344,19 +410,62 @@ export default function FoodLabStudioPage() {
 
   const [favorites, setFavorites] = useState<number[]>([]);
 
-  const [selected, setSelected] = useState<PromptItem | null>(null);
+  const [selectedPrompt, setSelectedPrompt] = useState<PromptItem | null>(null);
 
   const [brand, setBrand] = useState("");
-
   const [product, setProduct] = useState("");
-
   const [headline, setHeadline] = useState("");
-
   const [price, setPrice] = useState("");
-
   const [format, setFormat] = useState("4:5 — Feed Instagram");
+  const [visualStyle, setVisualStyle] = useState(
+    "Editorial gastronômico premium",
+  );
+  const [sensation, setSensation] = useState("Desejo, fome e proximidade");
+  const [trigger, setTrigger] = useState("Textura e apetite");
 
-  const [toast, setToast] = useState("");
+  useEffect(() => {
+    if (!selectedPrompt) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedPrompt]);
+
+  const personalizedPrompt = useMemo(() => {
+    if (!selectedPrompt) return "";
+
+    const details = [
+      ["Nome da marca", brand],
+      ["Produto", product],
+      ["Frase ou oferta", headline],
+      ["Preço", price ? `R$ ${price}` : ""],
+      ["Formato final", format],
+      ["Estilo visual", visualStyle],
+      ["Sensação desejada", sensation],
+      ["Gatilho principal", trigger],
+    ].filter(([, value]) => value.trim());
+
+    const detailBlock = details.length
+      ? `\n\nDIREÇÃO PERSONALIZADA\n${details
+          .map(([label, value]) => `${label}: ${value}`)
+          .join("\n")}`
+      : "";
+
+    return `${selectedPrompt.text}${detailBlock}\n\nELEMENTAÇÃO VISUAL\n- Formato: ${format}\n- Organize a composição com hierarquia clara: produto em primeiro plano, área de respiro e texto legível.\n- Preserve textura, volume, iluminação natural e aparência realista.\n- Quebre o texto em parágrafos curtos, com leitura rápida e foco na conversão.\n\nENTREGA\nCrie uma imagem gastronômica premium, coerente com a marca e pronta para publicação. Não invente ingredientes, preços, logotipos ou informações que não foram fornecidos.`;
+  }, [
+    selectedPrompt,
+    brand,
+    product,
+    headline,
+    price,
+    format,
+    visualStyle,
+    sensation,
+    trigger,
+  ]);
 
   useEffect(() => {
     const pixelId = "2153674188571719";
@@ -421,6 +530,7 @@ export default function FoodLabStudioPage() {
 
     return () => io.disconnect();
   }, []);
+
   const categories = useMemo(
     () => [
       "Todos",
@@ -455,55 +565,12 @@ export default function FoodLabStudioPage() {
     });
   }, [query, category, favorites]);
 
-  const personalizedPrompt = useMemo(() => {
-    if (!selected) return "";
-
-    const fields: [string, string][] = [
-      ["Marca", brand],
-
-      ["Produto", product],
-
-      ["Frase publicitária", headline],
-
-      ["Preço", price ? `R$ ${price}` : ""],
-
-      ["Formato", format],
-    ].filter((entry) => safeText(entry[1])) as [string, string][];
-
-    return (
-      selected.text +
-      (fields.length
-        ? "\n\n---\nPERSONALIZAÇÃO DO CLIENTE (COMPLEMENTO, SEM ALTERAR O PROMPT ORIGINAL)\n" +
-          fields.map(([label, value]) => `${label}: ${value}`).join("\n") +
-          "\nUtilize somente as informações fornecidas; não invente ingredientes, preços ou marcas."
-        : "")
-    );
-  }, [selected, brand, product, headline, price, format]);
-
-  const notify = (message: string) => {
-    setToast(message);
-
-    window.setTimeout(() => setToast(""), 2200);
-  };
-
   const toggleFavorite = (id: number) => {
     setFavorites((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id],
     );
-  };
-
-  const copyPrompt = async () => {
-    try {
-      await navigator.clipboard.writeText(personalizedPrompt);
-
-      notify("Prompt copiado para a área de transferência.");
-    } catch {
-      notify(
-        "Não foi possível copiar automaticamente. Selecione e copie o texto.",
-      );
-    }
   };
 
   return (
@@ -514,7 +581,6 @@ export default function FoodLabStudioPage() {
         <header className="fl-nav">
                    {" "}
           <a className="fl-brand" href="/" aria-label="FoodLab — início">
-                        <span className="fl-brand-mark">M</span>           {" "}
             <span>
                             Método{" "}
               <span className="fl-brand-muted">/ FoodLab</span>           {" "}
@@ -531,8 +597,7 @@ export default function FoodLabStudioPage() {
           </nav>
                    {" "}
           <a className="fl-nav-cta" href="#contato">
-                        Vamos conversar <span aria-hidden="true">↗</span>       
-             {" "}
+            Vamos conversar <FiArrowUpRight aria-hidden="true" />
           </a>
                  {" "}
         </header>
@@ -570,7 +635,7 @@ export default function FoodLabStudioPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                                Comprar agora ↗              {" "}
+                Comprar agora <FiArrowUpRight aria-hidden="true" />
               </a>
                            {" "}
               <a className="fl-secondary" href="#comparacao">
@@ -783,8 +848,11 @@ export default function FoodLabStudioPage() {
                       onClick={() => toggleFavorite(item.id)}
                     >
                                            {" "}
-                      {favorites.includes(item.id) ? "♥" : "♡"}                 
-                       {" "}
+                      {favorites.includes(item.id) ? (
+                        <FiHeart aria-hidden="true" fill="currentColor" />
+                      ) : (
+                        <FiHeart aria-hidden="true" />
+                      )}
                     </button>
                                      {" "}
                   </div>
@@ -803,32 +871,42 @@ export default function FoodLabStudioPage() {
                     </p>
                                        {" "}
                     <div className="fl-cardbottom">
-                                           {" "}
-                      <button
-                        type="button"
-                        className="fl-openbtn"
-                        onClick={() => {
-                          setSelected(item);
-
-                          setBrand("");
-
-                          setProduct("");
-
-                          setHeadline("");
-
-                          setPrice("");
-
-                          setFormat("4:5 — Feed Instagram");
-                        }}
-                      >
-                                                Ver prompt ↗                    
-                         {" "}
-                      </button>
-                                           {" "}
+                      {item.id === prompts[0].id ? (
+                        <button
+                          type="button"
+                          className="fl-prompt-action"
+                          onClick={() => {
+                            setSelectedPrompt(item);
+                            setBrand("");
+                            setProduct("");
+                            setHeadline("");
+                            setPrice("");
+                            setFormat("4:5 — Feed Instagram");
+                            setVisualStyle("Editorial gastronômico premium");
+                            setSensation("Desejo, fome e proximidade");
+                            setTrigger("Textura e apetite");
+                          }}
+                        >
+                          Ver prompt <FiArrowUpRight aria-hidden="true" />
+                        </button>
+                      ) : (
+                        <a
+                          className="fl-prompt-action locked"
+                          href="https://pay.kiwify.com.br/pDueN25?utm_id=97760_v0_s00_e0_tv4"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <FiLock aria-hidden="true" /> Liberar acesso
+                        </a>
+                      )}{" "}
                       <span className="fl-num">
                                                {" "}
-                        {favorites.includes(item.id) ? "♥ Salvo" : " "}         
-                                   {" "}
+                        {favorites.includes(item.id) ? (
+                          <>
+                            <FiHeart aria-hidden="true" fill="currentColor" />{" "}
+                            Salvo
+                          </>
+                        ) : null}
                       </span>
                                          {" "}
                     </div>
@@ -897,48 +975,51 @@ export default function FoodLabStudioPage() {
             <div>
               <p className="fl-eyebrow">03 / Antes & depois</p>
               <h2 id="fl-before-after-title">
-                A mesma ideia. Uma apresentação completamente diferente.
+                ESSAS SESSÕES TAMBÉM NÃO ACONTECERAM.
               </h2>
             </div>
-            <p>
-              Veja lado a lado a fotografia original e uma direção visual
-              trabalhada para valorizar o produto.
-            </p>
+            <p>Uma foto simples. Uma nova apresentação.</p>
           </div>
-          <div className="fl-ba-grid">
-            {beforeAfterExamples.map((example) => (
-              <article className="fl-ba-card" key={example.id}>
-                <div className="fl-ba-images">
-                  <div className="fl-ba-side">
-                    <img
-                      src={example.before}
-                      alt={`Antes — ${example.title}`}
-                      loading="lazy"
-                    />
-                    <span className="fl-ba-label">ANTES</span>
+          <div
+            className="fl-ba-grid"
+          >
+            <div className="fl-ba-track">
+                {[...beforeAfterExamples, ...beforeAfterExamples].map(
+                  (example, index) => (
+                  <article className="fl-ba-card" key={`${example.id}-${index}`}>
+                  <div className="fl-ba-images">
+                    <div className="fl-ba-side">
+                      <img
+                        src={example.before}
+                        alt={`Antes — ${example.title}`}
+                        loading="lazy"
+                      />
+                      <span className="fl-ba-label">ANTES</span>
+                    </div>
+                    <div className="fl-ba-side">
+                      <img
+                        src={example.after}
+                        alt={`Depois — ${example.title}`}
+                        loading="lazy"
+                      />
+                      <span className="fl-ba-label after">DEPOIS</span>
+                    </div>
                   </div>
-                  <div className="fl-ba-side">
-                    <img
-                      src={example.after}
-                      alt={`Depois — ${example.title}`}
-                      loading="lazy"
-                    />
-                    <span className="fl-ba-label after">DEPOIS</span>
+                  <div className="fl-ba-caption">
+                    <strong>{example.title}</strong>
+                    {example.description}
                   </div>
-                </div>
-                <div className="fl-ba-caption">
-                  <strong>{example.title}</strong>
-                  {example.description}
-                </div>
-              </article>
-            ))}
+                  </article>
+                  ),
+                )}
+            </div>
           </div>
         </section>
         <div className="fl-marquee" aria-label="Imagem. Referência. Intenção.">
           <span>
-            IMAGEM <i>✳</i> REFERÊNCIA <i>✳</i> INTENÇÃO <i>✳</i> REPETIÇÃO COM
-            IDENTIDADE <i>✳</i>
-            IMAGEM <i>✳</i> REFERÊNCIA <i>✳</i> INTENÇÃO <i>✳</i>
+            IMAGEM <i>•</i> REFERÊNCIA <i>•</i> INTENÇÃO <i>•</i> REPETIÇÃO COM
+            IDENTIDADE <i>•</i>
+            IMAGEM <i>•</i> REFERÊNCIA <i>•</i> INTENÇÃO <i>•</i>
           </span>
         </div>
         <section data-reveal className="fl-section" id="imagens-ia">
@@ -1123,7 +1204,7 @@ export default function FoodLabStudioPage() {
                 rel="noopener noreferrer"
                 style={{ justifyContent: "center", marginTop: 18 }}
               >
-                                Quero o Estúdio Fotos ↗              {" "}
+                Quero o Estúdio Fotos <FiArrowUpRight aria-hidden="true" />
               </a>
                          {" "}
             </article>
@@ -1156,7 +1237,7 @@ export default function FoodLabStudioPage() {
                 rel="noopener noreferrer"
                 style={{ justifyContent: "center", marginTop: 18 }}
               >
-                                Quero Fotos + Vídeos ↗              {" "}
+                Quero Fotos + Vídeos <FiArrowUpRight aria-hidden="true" />
               </a>
                          {" "}
             </article>
@@ -1250,7 +1331,7 @@ export default function FoodLabStudioPage() {
           </div>
                    {" "}
           <a className="fl-primary" href="/#contact">
-                        Fale com a gente ↗          {" "}
+            Fale com a gente <FiArrowUpRight aria-hidden="true" />
           </a>
                  {" "}
         </section>
@@ -1258,7 +1339,6 @@ export default function FoodLabStudioPage() {
         <footer className="fl-footer">
                    {" "}
           <a className="fl-brand" href="/" aria-label="FoodLab — início">
-                        <span className="fl-brand-mark">M</span>           {" "}
             <span>
                             MÉTODO{" "}
               <span className="fl-brand-muted">FOODLAB</span>           {" "}
@@ -1267,161 +1347,118 @@ export default function FoodLabStudioPage() {
           </a>
                    {" "}
           <span>Uma foto. Várias produções. Nenhuma sessão nova.</span>         {" "}
-          <a href="#fl-hero-title">VOLTAR AO TOPO ↑</a>       {" "}
         </footer>
              {" "}
       </div>
-           {" "}
-      {selected && (
+               {" "}
+      {selectedPrompt && (
         <div
           className="fl-modal-backdrop"
           role="presentation"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setSelected(null);
+            if (event.target === event.currentTarget) setSelectedPrompt(null);
           }}
         >
-                   {" "}
           <section
             className="fl-modal"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="fl-modal-title"
+            aria-labelledby="fl-prompt-title"
           >
-                       {" "}
-            <aside className="fl-modal-left">
-                            <img src={selected.img} alt={selected.name} />     
-                      <h2 id="fl-modal-title">{selected.name}</h2>             {" "}
-              <p>
-                                Prompt {String(selected.id).padStart(3, "0")} ·
-                texto original                 preservado              {" "}
-              </p>
-                           {" "}
+            <div className="fl-modal-content">
               <div className="fl-modal-fields">
-                               {" "}
+                <h3 className="fl-fields-title">{selectedPrompt.name}</h3>
                 <div className="fl-field">
-                                    <label htmlFor="fl-brand">Marca</label>     
-                             {" "}
+                  <label htmlFor="fl-brand">Nome da marca</label>
                   <input
                     id="fl-brand"
                     value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                    placeholder="Nome da marca"
+                    onChange={(event) => setBrand(event.target.value)}
+                    placeholder="Ex.: FoodLab"
                   />
-                                 {" "}
                 </div>
-                               {" "}
                 <div className="fl-field">
-                                    <label htmlFor="fl-product">Produto</label> 
-                                 {" "}
+                  <label htmlFor="fl-product">Produto</label>
                   <input
                     id="fl-product"
                     value={product}
-                    onChange={(e) => setProduct(e.target.value)}
+                    onChange={(event) => setProduct(event.target.value)}
                     placeholder="Ex.: hambúrguer artesanal"
                   />
-                                 {" "}
                 </div>
-                               {" "}
                 <div className="fl-field">
-                                   {" "}
-                  <label htmlFor="fl-headline">Frase publicitária</label>       
-                           {" "}
+                  <label htmlFor="fl-headline">Frase ou oferta</label>
                   <input
                     id="fl-headline"
                     value={headline}
-                    onChange={(e) => setHeadline(e.target.value)}
-                    placeholder="Opcional"
+                    onChange={(event) => setHeadline(event.target.value)}
+                    placeholder="Ex.: O sabor que reúne todo mundo"
                   />
-                                 {" "}
                 </div>
-                               {" "}
                 <div className="fl-field">
-                                   {" "}
-                  <label htmlFor="fl-price">Preço (opcional)</label>           
-                       {" "}
+                  <label htmlFor="fl-price">Preço</label>
                   <input
                     id="fl-price"
                     value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    onChange={(event) => setPrice(event.target.value)}
                     placeholder="Ex.: 29,90"
                   />
-                                 {" "}
                 </div>
-                               {" "}
                 <div className="fl-field">
-                                    <label htmlFor="fl-format">Formato</label> 
-                                 {" "}
+                  <label htmlFor="fl-format">Formato e tamanho</label>
                   <select
                     id="fl-format"
                     value={format}
-                    onChange={(e) => setFormat(e.target.value)}
+                    onChange={(event) => setFormat(event.target.value)}
                   >
-                                        <option>4:5 — Feed Instagram</option>   
-                                    <option>9:16 — Stories / Reels</option>     
-                                  <option>1:1 — Quadrado</option>               
-                        <option>16:9 — Horizontal</option>                 {" "}
+                    <option>4:5 — Feed Instagram</option>
+                    <option>9:16 — Stories / Reels</option>
+                    <option>1:1 — Quadrado</option>
+                    <option>16:9 — Horizontal</option>
                   </select>
-                                 {" "}
                 </div>
-                             {" "}
+                <div className="fl-field">
+                  <label htmlFor="fl-style">Estilo visual</label>
+                  <input
+                    id="fl-style"
+                    value={visualStyle}
+                    onChange={(event) => setVisualStyle(event.target.value)}
+                  />
+                </div>
+                <div className="fl-field">
+                  <label htmlFor="fl-sensation">Sensação</label>
+                  <input
+                    id="fl-sensation"
+                    value={sensation}
+                    onChange={(event) => setSensation(event.target.value)}
+                  />
+                </div>
+                <div className="fl-field">
+                  <label htmlFor="fl-trigger">Gatilho</label>
+                  <input
+                    id="fl-trigger"
+                    value={trigger}
+                    onChange={(event) => setTrigger(event.target.value)}
+                  />
+                </div>
               </div>
-                         {" "}
-            </aside>
-                       {" "}
-            <div className="fl-modal-right">
-                           {" "}
-              <div className="fl-modal-toolbar">
-                                <h3>Prompt completo</h3>               {" "}
-                <button
-                  type="button"
-                  className="fl-modal-close"
-                  onClick={() => setSelected(null)}
-                >
-                                    Fechar ×                {" "}
-                </button>
-                             {" "}
+              <div className="fl-prompt-panel">
+                <div className="fl-modal-toolbar">
+                  <h3 id="fl-prompt-title">Prompt pronto</h3>
+                  <button
+                    type="button"
+                    className="fl-modal-close"
+                    onClick={() => setSelectedPrompt(null)}
+                  >
+                    Fechar <FiX aria-hidden="true" />
+                  </button>
+                </div>
+                <div className="fl-prompt-text">{personalizedPrompt}</div>
               </div>
-                           {" "}
-              <div className="fl-prompt-text">{personalizedPrompt}</div>       
-                   {" "}
-              <div className="fl-modal-actions">
-                               {" "}
-                <button
-                  type="button"
-                  className="fl-primary"
-                  onClick={copyPrompt}
-                >
-                                    Copiar prompt completo ↗              
-                   {" "}
-                </button>
-                               {" "}
-                <button
-                  type="button"
-                  className="fl-secondary"
-                  onClick={() => toggleFavorite(selected.id)}
-                >
-                                   {" "}
-                  {favorites.includes(selected.id)
-                    ? "♥ Remover dos favoritos"
-                    : "♡ Favoritar modelo"}
-                                 {" "}
-                </button>
-                             {" "}
-              </div>
-                         {" "}
             </div>
-                     {" "}
           </section>
-                 {" "}
         </div>
       )}
-           {" "}
-      {toast && (
-        <div className="fl-toast" role="status">
-                    {toast}       {" "}
-        </div>
-      )}
-         {" "}
     </main>
   );
 }
