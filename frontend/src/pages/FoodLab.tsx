@@ -1,7 +1,7 @@
 ﻿import { useEffect } from "react";
 
-import { useMemo, useState } from "react";
-import { FiArrowUp, FiArrowUpRight, FiHeart, FiLock, FiX } from "react-icons/fi";
+import { useMemo, useRef, useState } from "react";
+import { FiArrowUpRight, FiCopy, FiHeart, FiLock, FiX } from "react-icons/fi";
 
 type PromptItem = {
   id: number;
@@ -17,17 +17,6 @@ type PromptItem = {
 
 const prompts: PromptItem[] = [
   {
-    id: 1,
-
-    name: "Brinde com Três Hambúrgueres Artesanais",
-
-    text: "Transforme esta foto de hambúrguer em uma imagem gastronômica profissional e apetitosa. Preserve exatamente o formato, os ingredientes e a identidade do produto. Use iluminação lateral suave, contraste equilibrado, textura realista, fundo limpo e composição editorial premium. O hambúrguer deve permanecer como protagonista, sem aparência artificial ou elementos inventados.",
-
-    category: "FoodLab",
-
-    img: "/portfolio/media/imagens/Brinde com Três Hambúrgueres Artesanais.webp",
-  },
-  {
     id: 13,
 
     name: "Hambúrguer Clássico em Destaque Retro",
@@ -38,6 +27,18 @@ const prompts: PromptItem[] = [
 
     img: "/portfolio/media/imagens/Hambúrguer Clássico em Destaque Retro.webp",
   },
+  {
+    id: 1,
+
+    name: "Brinde com Três Hambúrgueres Artesanais",
+
+    text: "Transforme esta foto de hambúrguer em uma imagem gastronômica profissional e apetitosa. Preserve exatamente o formato, os ingredientes e a identidade do produto. Use iluminação lateral suave, contraste equilibrado, textura realista, fundo limpo e composição editorial premium. O hambúrguer deve permanecer como protagonista, sem aparência artificial ou elementos inventados.",
+
+    category: "FoodLab",
+
+    img: "/portfolio/media/imagens/Brinde com Três Hambúrgueres Artesanais.webp",
+  },
+
   {
     id: 15,
 
@@ -317,11 +318,13 @@ const styles = `
 #metodo + #foodlab-before-after { margin-top: 0; padding-top: 24px; }
 .fl-ba-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
 .fl-ba-card { min-width: 0; overflow: hidden; border: 1px solid var(--stroke); border-radius: 18px; background: var(--panel); }
-.fl-ba-grid { overflow: hidden; padding: 4px 2px 14px; }
+.fl-ba-grid { --fl-ba-gap: 18px; overflow: hidden; padding: 4px 2px 14px; }
 .fl-ba-grid::-webkit-scrollbar { display: none; }
-.fl-ba-track { display: flex; width: max-content; gap: 18px; animation: fl-before-after-scroll 30s linear infinite; will-change: transform; }
+.fl-ba-grid { cursor: grab; touch-action: pan-y; }
+.fl-ba-grid:active { cursor: grabbing; }
+.fl-ba-track { display: flex; width: max-content; gap: var(--fl-ba-gap); animation: fl-before-after-scroll 30s linear infinite; will-change: transform; }
 .fl-ba-grid:hover .fl-ba-track { animation-play-state: paused; }
-@keyframes fl-before-after-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 9px)); } }
+@keyframes fl-before-after-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - var(--fl-ba-gap) / 2)); } }
 @media (prefers-reduced-motion: reduce) { .fl-ba-track { animation: none; } }
 .fl-ba-card { flex: 0 0 min(390px, 82vw); scroll-snap-align: start; min-width: 0; overflow: hidden; border: 1px solid var(--stroke); border-radius: 20px; background: var(--bg); box-shadow: 0 12px 30px #00000018; color: var(--text); }
 .fl-ba-images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 14px 14px 0; background: var(--bg); overflow: hidden; }
@@ -332,13 +335,23 @@ const styles = `
 .fl-ba-label.after { color: #ff8b45; }
 .fl-ba-caption { padding: 14px 16px 18px; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .fl-ba-caption strong { display: block; margin-bottom: 4px; color: var(--text); font: 700 16px Outfit, sans-serif; }
-.fl-prompt-action { display: flex; width: 100%; margin-top: 15px; align-items: center; justify-content: center; border: 0; border-radius: 10px; padding: 11px 14px; background: var(--accent); color: #1c130d; font-weight: 800; }
+.fl-prompt-action { display: flex; width: 100%; margin-top: 15px; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 10px; padding: 11px 14px; background: var(--accent); color: #050605!important; font-weight: 700; letter-spacing: .3px; }
 .fl-prompt-action.locked { background: #f1aa22; }
+.fl-prompt-action.loading { background: #4ade80; color: #050605!important; }
+.fl-prompt-action svg { flex: 0 0 auto; }
+.fl-primary,.fl-secondary,.fl-nav-cta,.fl-modal-close { color: #050605!important; font-weight: 700; letter-spacing: .3px; }
 .fl-modal-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 20px; background: #000000b8; }
 .fl-modal { display: flex; width: min(1040px, calc(100vw - 48px)); height: min(820px, calc(100vh - 48px)); max-height: calc(100vh - 48px); flex-direction: column; overflow: hidden; border: 1px solid #424640; border-radius: 20px; background: var(--panel); box-shadow: 0 24px 80px #00000066; }
 .fl-modal-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 16px 22px; border-bottom: 1px solid var(--stroke); }
 .fl-modal-toolbar h3 { min-width: 0; margin: 0; color: var(--text); font: 700 18px/1.2 Outfit, sans-serif; }
-.fl-modal-close { border: 0; border-radius: 9px; padding: 8px 11px; background: #292c29; color: var(--text); font-weight: 700; }
+.fl-modal-actions { display: flex; align-items: center; gap: 8px; }
+.fl-modal-copy { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 9px; padding: 8px 11px; background: var(--accent); color: #050605; font-weight: 700; letter-spacing: .3px; }
+.fl-modal-copy.copied { background: #4ade80; }
+.fl-modal-copy.error { background: #f87171; }
+.fl-secondary { background: var(--accent); border-color: #ffad7b; color: #050605 !important; }
+.fl-secondary:hover { background: #ff9b6b; border-color: #ffc09d; }
+.fl-modal-close { border: 0; border-radius: 9px; padding: 8px 11px; background: #dc2626; color: #ffffff !important; font-weight: 700; }
+.fl-modal-close:hover { background: #ef4444; }
 .fl-prompt-text { min-height: 0; min-width: 0; flex: 1; overflow-y: auto; overflow-wrap: anywhere; white-space: pre-wrap; padding: 24px 28px 28px; color: #d7d8d1; font-size: 14px; line-height: 1.75; }
 .fl-modal-content { display: grid; grid-template-columns: minmax(320px, 360px) minmax(0, 1fr); min-height: 0; flex: 1; overflow: hidden; }
 .fl-modal-fields { display: grid; align-content: start; gap: 14px; min-width: 0; overflow-y: auto; padding: 24px; border-right: 1px solid var(--stroke); }
@@ -356,7 +369,8 @@ const styles = `
   #metodo { padding-top: 42px; padding-bottom: 12px; }
   #foodlab-before-after { padding-top: 18px; padding-bottom: 48px; }
   #metodo + #foodlab-before-after { margin-top: 0; }
-  .fl-ba-track { gap: 14px; animation-duration: 24s; }
+  .fl-ba-grid { --fl-ba-gap: 14px; }
+  .fl-ba-track { animation-duration: 24s; }
   .fl-ba-images { aspect-ratio: 16 / 10; }
   .fl-ba-label { top: 8px; left: 8px; padding: 6px 8px; font-size: 9px; }
   .fl-ba-caption { padding: 12px 13px 14px; }
@@ -381,7 +395,8 @@ const styles = `
   .fl-cardbody p { margin-bottom: 12px; font-size: 11px; }
   .fl-cardbottom { display: block; }
   .fl-prompt-action { width: 100%; }
-  .fl-ba-track { gap: 12px; animation-duration: 52s; }
+  .fl-ba-grid { --fl-ba-gap: 12px; }
+  .fl-ba-track { animation-duration: 52s; }
   .fl-ba-card { flex-basis: min(300px, 78vw); }
   .fl-ba-images { gap: 7px; padding: 10px 10px 0; }
   .fl-ba-side img { aspect-ratio: 1 / 1.08; border-radius: 9px; }
@@ -400,6 +415,9 @@ const styles = `
   .fl-prompt-panel { min-height: 0; }
   .fl-prompt-text { height: auto; max-height: 30vh; padding: 14px; font-size: 13px; line-height: 1.55; }
   .fl-prompt-action { min-height: 36px; padding: 8px 10px; }
+  .fl-hero { display: flex; flex-direction: column; }
+  .fl-hero-art-wrap { order: -1; width: 100%; }
+  .fl-hero-copy { width: 100%; }
 }
 `;
 
@@ -411,6 +429,16 @@ export default function FoodLabStudioPage() {
   const [favorites, setFavorites] = useState<number[]>([]);
 
   const [selectedPrompt, setSelectedPrompt] = useState<PromptItem | null>(null);
+  const [isPromptLoading, setIsPromptLoading] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
+    "idle",
+  );
+  const beforeAfterTrackRef = useRef<HTMLDivElement>(null);
+  const beforeAfterDragRef = useRef({
+    active: false,
+    startX: 0,
+    startTranslateX: 0,
+  });
 
   const [brand, setBrand] = useState("");
   const [product, setProduct] = useState("");
@@ -573,6 +601,81 @@ export default function FoodLabStudioPage() {
     );
   };
 
+  const handleBeforeAfterPointerDown = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (event.button !== 0 || !beforeAfterTrackRef.current) return;
+
+    const track = beforeAfterTrackRef.current;
+    const computedTransform = window.getComputedStyle(track).transform;
+    const currentTranslateX =
+      computedTransform === "none"
+        ? 0
+        : new DOMMatrixReadOnly(computedTransform).m41;
+
+    track.style.animation = "none";
+    track.style.transform = `translate3d(${currentTranslateX}px, 0, 0)`;
+    beforeAfterDragRef.current = {
+      active: true,
+      startX: event.clientX,
+      startTranslateX: currentTranslateX,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleBeforeAfterPointerMove = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    const drag = beforeAfterDragRef.current;
+    const track = beforeAfterTrackRef.current;
+    if (!drag.active || !track) return;
+
+    const translateX = drag.startTranslateX + event.clientX - drag.startX;
+    track.style.transform = `translate3d(${translateX}px, 0, 0)`;
+  };
+
+  const handleBeforeAfterPointerUp = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (!beforeAfterDragRef.current.active) return;
+
+    beforeAfterDragRef.current.active = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const openPrompt = (item: PromptItem) => {
+    if (isPromptLoading) return;
+
+    setIsPromptLoading(true);
+    setBrand("");
+    setProduct("");
+    setHeadline("");
+    setPrice("");
+    setFormat("4:5 — Feed Instagram");
+    setVisualStyle("Editorial gastronômico premium");
+    setSensation("Desejo, fome e proximidade");
+    setTrigger("Textura e apetite");
+
+    window.setTimeout(() => {
+      setSelectedPrompt(item);
+      setIsPromptLoading(false);
+    }, 260);
+  };
+
+  const copyPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(personalizedPrompt);
+      setCopyStatus("copied");
+      window.setTimeout(() => setCopyStatus("idle"), 1800);
+    } catch (error) {
+      console.error("Não foi possível copiar o prompt.", error);
+      setCopyStatus("error");
+      window.setTimeout(() => setCopyStatus("idle"), 2200);
+    }
+  };
+
   return (
     <main className="foodlab-page">
             <style>{styles}</style>     {" "}
@@ -596,8 +699,11 @@ export default function FoodLabStudioPage() {
             <a href="#planos">Estúdios</a>         {" "}
           </nav>
                    {" "}
-          <a className="fl-nav-cta" href="#contato">
-            Vamos conversar <FiArrowUpRight aria-hidden="true" />
+          <a
+            className="fl-nav-cta bg-green-300 text-white animate-bounce"
+            href="#Testee"
+          >
+            Fazer teste <FiArrowUpRight aria-hidden="true" />
           </a>
                  {" "}
         </header>
@@ -873,25 +979,20 @@ export default function FoodLabStudioPage() {
                     <div className="fl-cardbottom">
                       {item.id === prompts[0].id ? (
                         <button
+                          id="Testee"
                           type="button"
-                          className="fl-prompt-action"
-                          onClick={() => {
-                            setSelectedPrompt(item);
-                            setBrand("");
-                            setProduct("");
-                            setHeadline("");
-                            setPrice("");
-                            setFormat("4:5 — Feed Instagram");
-                            setVisualStyle("Editorial gastronômico premium");
-                            setSensation("Desejo, fome e proximidade");
-                            setTrigger("Textura e apetite");
-                          }}
+                          className={`relative isolate overflow-hidden flex items-center justify-center gap-2 fl-prompt-action animate-bounce before:content-[''] before:absolute before:top-0 before:-left-[100px] before:h-full before:w-[100px] before:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,0.8),transparent_70%)] before:opacity-60 hover:before:animate-[shine_1.5s_ease-out_infinite] ${
+                            isPromptLoading ? "loading" : ""
+                          }`}
+                          onClick={() => openPrompt(item)}
+                          disabled={isPromptLoading}
                         >
-                          Ver prompt <FiArrowUpRight aria-hidden="true" />
+                          {isPromptLoading ? "Abrindo..." : "Testar"}
+                          <FiArrowUpRight aria-hidden="true" />
                         </button>
                       ) : (
                         <a
-                          className="fl-prompt-action locked"
+                          className="relative isolate overflow-hidden flex items-center justify-center gap-2 fl-prompt-action locked before:content-[''] before:absolute before:top-0 before:-left-[100px] before:h-full before:w-[100px] before:bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,0.8),transparent_70%)] before:opacity-60 hover:before:animate-[shine_1.5s_ease-out_infinite]"
                           href="https://pay.kiwify.com.br/pDueN25?utm_id=97760_v0_s00_e0_tv4"
                           target="_blank"
                           rel="noopener noreferrer"
@@ -980,38 +1081,47 @@ export default function FoodLabStudioPage() {
             </div>
             <p>Uma foto simples. Uma nova apresentação.</p>
           </div>
-          <div
-            className="fl-ba-grid"
-          >
-            <div className="fl-ba-track">
-                {[...beforeAfterExamples, ...beforeAfterExamples].map(
-                  (example, index) => (
-                  <article className="fl-ba-card" key={`${example.id}-${index}`}>
-                  <div className="fl-ba-images">
-                    <div className="fl-ba-side">
-                      <img
-                        src={example.before}
-                        alt={`Antes — ${example.title}`}
-                        loading="lazy"
-                      />
-                      <span className="fl-ba-label">ANTES</span>
+          <div className="fl-ba-grid">
+            <div
+              ref={beforeAfterTrackRef}
+              className="fl-ba-track"
+              onPointerDown={handleBeforeAfterPointerDown}
+              onPointerMove={handleBeforeAfterPointerMove}
+              onPointerUp={handleBeforeAfterPointerUp}
+              onPointerCancel={handleBeforeAfterPointerUp}
+              aria-label="Arraste para navegar pelos exemplos antes e depois"
+            >
+              {[...beforeAfterExamples, ...beforeAfterExamples].map(
+                (example, index) => (
+                  <article
+                    className="fl-ba-card"
+                    key={`${example.id}-${index}`}
+                  >
+                    <div className="fl-ba-images">
+                      <div className="fl-ba-side">
+                        <img
+                          src={example.before}
+                          alt={`Antes — ${example.title}`}
+                          loading="lazy"
+                        />
+                        <span className="fl-ba-label">ANTES</span>
+                      </div>
+                      <div className="fl-ba-side">
+                        <img
+                          src={example.after}
+                          alt={`Depois — ${example.title}`}
+                          loading="lazy"
+                        />
+                        <span className="fl-ba-label after">DEPOIS</span>
+                      </div>
                     </div>
-                    <div className="fl-ba-side">
-                      <img
-                        src={example.after}
-                        alt={`Depois — ${example.title}`}
-                        loading="lazy"
-                      />
-                      <span className="fl-ba-label after">DEPOIS</span>
+                    <div className="fl-ba-caption">
+                      <strong>{example.title}</strong>
+                      {example.description}
                     </div>
-                  </div>
-                  <div className="fl-ba-caption">
-                    <strong>{example.title}</strong>
-                    {example.description}
-                  </div>
                   </article>
-                  ),
-                )}
+                ),
+              )}
             </div>
           </div>
         </section>
@@ -1331,7 +1441,8 @@ export default function FoodLabStudioPage() {
           </div>
                    {" "}
           <a className="fl-primary" href="/#contact">
-            Fale com a gente <FiArrowUpRight aria-hidden="true" />
+            Siga no instagram
+            <FiArrowUpRight aria-hidden="true" />
           </a>
                  {" "}
         </section>
@@ -1346,7 +1457,8 @@ export default function FoodLabStudioPage() {
                      {" "}
           </a>
                    {" "}
-          <span>Uma foto. Várias produções. Nenhuma sessão nova.</span>         {" "}
+          <span>Uma foto. Várias produções. Nenhuma sessão nova.</span>       
+           {" "}
         </footer>
              {" "}
       </div>
@@ -1445,13 +1557,30 @@ export default function FoodLabStudioPage() {
               <div className="fl-prompt-panel">
                 <div className="fl-modal-toolbar">
                   <h3 id="fl-prompt-title">Prompt pronto</h3>
-                  <button
-                    type="button"
-                    className="fl-modal-close"
-                    onClick={() => setSelectedPrompt(null)}
-                  >
-                    Fechar <FiX aria-hidden="true" />
-                  </button>
+                  <div className="fl-modal-actions">
+                    <button
+                      type="button"
+                      className={`fl-modal-copy ${copyStatus}`}
+                      onClick={copyPrompt}
+                    >
+                      <FiCopy aria-hidden="true" />
+                      {copyStatus === "copied"
+                        ? "Copiado!"
+                        : copyStatus === "error"
+                          ? "Erro ao copiar"
+                          : "Copiar"}
+                    </button>
+                    <button
+                      type="button"
+                      className="fl-modal-close"
+                      onClick={() => {
+                        setCopyStatus("idle");
+                        setSelectedPrompt(null);
+                      }}
+                    >
+                      Fechar <FiX aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
                 <div className="fl-prompt-text">{personalizedPrompt}</div>
               </div>

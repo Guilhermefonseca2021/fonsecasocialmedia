@@ -103,6 +103,21 @@
   z-index: 1;
 }
 
+/* button fazer teste do foodlab */
+@keyframes shine {
+  0% {
+    left: -100px;
+  }
+
+  60% {
+    left: 100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
 .model-kicker,
 .model-video-status,
 .model-visual-footnote,
