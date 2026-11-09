@@ -33,13 +33,16 @@ export default function FactoryModels() {
         <div className="relative z-10">
           <p className="factory-kicker">FÁBRICA DE MODELOS / 001</p>
           <h1 className="factory-display mt-6 max-w-3xl text-5xl font-black leading-[0.9] tracking-[-0.07em] sm:text-7xl lg:text-[6.5rem]">Uma imagem.<br /><span>Mil possibilidades.</span></h1>
-          <p className="mt-8 max-w-xl text-lg leading-8 text-white/62">Mais de 100 prompts e atualizações semanais para restaurantes, bijuterias, temakerias, hamburguerias, pizzarias, roupas, calçados e joias.</p>
+          <p className="mt-8 max-w-xl text-lg leading-8 text-white/85">Mais de 100 prompts e atualizações semanais para restaurantes, bijuterias, temakerias, hamburguerias, pizzarias, roupas, calçados e joias.</p>
           <div className="mt-10 flex flex-wrap gap-4">
             <a href="#conversa" className="brand-button factory-primary rounded-[18px] px-6 py-4 text-sm">Construir meu modelo <span aria-hidden="true">↗</span></a>
             <a href="#como-funciona" className="factory-secondary rounded-[18px] px-6 py-4 text-sm font-bold text-white">Ver o sistema</a>
           </div>
         </div>
         <div className="factory-hero-art spotlight-card">
+          <div className="factory-hero-marquee" aria-label="Prévia de imagens da biblioteca">
+            <div className="factory-marquee-track">{[...showcases, ...showcases].map((item, index) => <img key={`${item.label}-hero-${index}`} src={item.image} alt="" aria-hidden="true" />)}</div>
+          </div>
           <div className="factory-art-grid" aria-hidden="true" />
           <img src="/portfolio/media/fonseca-camera.jpeg" alt="Fonseca segurando uma câmera em um estúdio" className="factory-hero-image" />
           <div className="factory-art-label"><span>MODELO REAL</span><strong>PERSONA / 001</strong></div>
@@ -49,9 +52,9 @@ export default function FactoryModels() {
 
       <section id="possibilidades" className="mx-auto max-w-7xl px-6 pb-24 sm:px-8 lg:pb-36">
         <div className="factory-section-heading"><p className="factory-kicker">DE UMA REFERÊNCIA PARA UM UNIVERSO</p><h2 className="factory-display mt-5 max-w-4xl text-4xl font-black tracking-[-0.06em] sm:text-6xl">Não é só uma foto.<br /><span>É um ativo da sua marca.</span></h2></div>
-        <div className="factory-slider mt-12"><div className="grid gap-5 md:grid-cols-3">
-          {showcases.map((item, index) => <button type="button" key={item.label} onClick={() => setActive(index)} className={`factory-showcase spotlight-card text-left ${active === index ? "is-active" : ""}`}><img src={item.image} alt={item.label} loading="lazy" /><span className="factory-showcase-overlay" /><div className="relative z-10 flex items-end justify-between"><span><small>{active === index ? "DEPOIS DO PROMPT" : `ANTES / DEPOIS 0${index + 1}`}</small><strong>{item.label}</strong></span><span className="factory-arrow">↗</span></div></button>)}
-        </div><p className="mt-4 text-xs uppercase tracking-[0.16em] text-white/40">Selecione um cartão para comparar a direção visual do prompt.</p></div>
+        <div className="factory-slider mt-12"><div className="factory-card-track">
+          {[...showcases, ...showcases].map((item, index) => { const originalIndex = index % showcases.length; return <button type="button" key={`${item.label}-${index}`} onClick={() => setActive(originalIndex)} className={`factory-showcase spotlight-card text-left ${active === originalIndex ? "is-active" : ""}`}><img src={item.image} alt={item.label} loading="lazy" /><span className="factory-showcase-overlay" /><div className="relative z-10 flex items-end justify-between"><span><small>{active === originalIndex ? "DEPOIS DO PROMPT" : `ANTES / DEPOIS 0${originalIndex + 1}`}</small><strong>{item.label}</strong></span><span className="factory-arrow">↗</span></div></button>; })}
+        </div><p className="mt-4 text-xs uppercase tracking-[0.16em] text-white/65">Selecione um cartão para comparar a direção visual do prompt.</p></div>
       </section>
 
       <section id="como-funciona" className="factory-process border-y border-white/10 bg-[#0d1729] py-24 sm:py-32"><div className="mx-auto max-w-7xl px-6 sm:px-8"><div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="factory-kicker">O MÉTODO</p><h2 className="factory-display mt-5 text-4xl font-black tracking-[-0.06em] sm:text-6xl">Um sistema<br /><span>que continua.</span></h2></div><div className="grid gap-3">{steps.map(([number, title, description]) => <div key={number} className="spotlight-card factory-step"><span>{number}</span><div><h3>{title}</h3><p>{description}</p></div><b aria-hidden="true">↗</b></div>)}</div></div></div></section>
