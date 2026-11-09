@@ -420,6 +420,26 @@ const styles = `
   .fl-hero-copy { width: 100%; }
 }
 
+/* Keep the hero before/after labels readable over the image without touching its edges. */
+.fl-ba-side { position: relative; }
+.fl-ba-label {
+  position: absolute;
+  z-index: 2;
+  bottom: 10px;
+  left: 50%;
+  order: initial;
+  transform: translateX(-50%);
+  border: 1px solid #ffffff3d;
+  border-radius: 999px;
+  padding: 6px 11px;
+  background: #111512d9;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px #00000040;
+}
+.fl-ba-label.after { color: #ffad7b; }
+
 /* FoodLab: mobile uses one consistent card rhythm and keeps every visual inside its frame. */
 .fl-cards,
 .fl-gallery,
