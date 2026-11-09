@@ -419,6 +419,131 @@ const styles = `
   .fl-hero-art-wrap { order: -1; width: 100%; }
   .fl-hero-copy { width: 100%; }
 }
+
+/* Keep the hero before/after labels readable over the image without touching its edges. */
+.fl-ba-side { position: relative; }
+.fl-ba-label {
+  position: absolute;
+  z-index: 2;
+  bottom: 10px;
+  left: 50%;
+  order: initial;
+  transform: translateX(-50%);
+  border: 1px solid #ffffff3d;
+  border-radius: 999px;
+  padding: 6px 11px;
+  background: #111512d9;
+  color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px #00000040;
+}
+.fl-ba-label.after { color: #ffad7b; }
+
+/* FoodLab: mobile uses one consistent card rhythm and keeps every visual inside its frame. */
+.fl-cards,
+.fl-gallery,
+.fl-showcase-grid,
+.fl-ba-grid { min-width: 0; }
+.fl-card,
+.fl-gallery-item,
+.fl-showcase-card { min-width: 0; overflow: hidden; }
+.fl-card { display: flex; min-height: 100%; flex-direction: column; }
+.fl-card-image { aspect-ratio: 4 / 5; height: auto; overflow: hidden; }
+.fl-card-image img,
+.fl-gallery-item img,
+.fl-showcase-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fl-cardbody { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+.fl-cardbody h3,
+.fl-cardbody p,
+.fl-cardbottom { min-width: 0; overflow-wrap: anywhere; }
+.fl-cardbottom { margin-top: auto; }
+.fl-cardbody p,
+.fl-section-heading > p,
+.fl-hero-copy > p:not(.fl-eyebrow),
+.fl-onboarding-copy > p,
+.fl-cost > div > p { color: #d0d2cb; }
+.fl-trust { color: #d9dbd5; }
+.fl-ba-grid { overflow: hidden; }
+.fl-ba-track { padding-inline: 2px; }
+.fl-ba-images { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* The hero keeps the before/after idea in a compact, low-distraction loop. */
+.fl-hero-art { overflow: hidden; }
+.fl-hero-art img { animation: fl-hero-slide 8s ease-in-out infinite; }
+.fl-hero-art img:first-of-type { animation-delay: -4s; }
+@keyframes fl-hero-slide {
+  0%, 42% { opacity: 1; transform: scale(1); }
+  50%, 92% { opacity: .18; transform: scale(1.045); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 720px) {
+  .foodlab-page { overflow-x: hidden; }
+  .fl-shell { padding-inline: 14px; }
+  .fl-navlinks { margin-inline: -2px; padding-inline: 2px; }
+  .fl-hero { padding-block: 18px 24px; gap: 12px; }
+  .fl-hero-art { width: min(100%, 280px); height: 148px; margin-inline: auto; }
+  .fl-hero h1 { margin-block: 8px 10px; font-size: clamp(28px, 9vw, 40px); line-height: 1.02; }
+  .fl-hero-copy > p:not(.fl-eyebrow) { font-size: 13px; line-height: 1.35; }
+  .fl-actions { flex-wrap: nowrap; gap: 6px; }
+  .fl-actions > * { min-width: 0; flex: 1 1 0; padding: 10px 8px; font-size: 12px; }
+  .fl-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .fl-card-image { aspect-ratio: 4 / 5; }
+  .fl-cardbody { padding: 10px; }
+  .fl-cardbody h3 { font-size: 13px; line-height: 1.18; }
+  .fl-cardbody p { font-size: 11px; line-height: 1.4; }
+  .fl-ba-card { flex-basis: min(292px, calc(100vw - 42px)); }
+  .fl-ba-images { aspect-ratio: 1.52; }
+  .fl-ba-side img { aspect-ratio: 1 / 1.08; }
+  .fl-ba-track { animation-duration: 42s; }
+  .fl-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .fl-gallery-item { min-height: 0; aspect-ratio: 1 / 1.08; }
+  .fl-gallery-item:first-child { grid-column: span 2; }
+  .fl-gallery-item span { max-width: 100%; overflow-wrap: anywhere; }
+  .fl-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .fl-logo { flex: 0 0 auto; }
+  .fl-nav-cta { margin-left: auto; flex: 0 0 auto; }
+  .fl-trust { margin-top: 8px; font-size: 10px; line-height: 1.35; }
+  .fl-hero-ba-loop { display: block; width: 100%; margin-top: 12px; overflow: hidden; }
+  .fl-hero-ba-track { display: flex; width: max-content; gap: 8px; animation: fl-hero-ba-scroll 24s linear infinite; }
+  .fl-hero-ba-card { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4px; width: 116px; padding: 4px; border: 1px solid var(--stroke); border-radius: 8px; background: var(--panel); }
+  .fl-hero-ba-card img { width: 45px; height: 38px; border-radius: 5px; object-fit: cover; }
+  .fl-hero-ba-card span { color: var(--accent2); font-size: 12px; }
+  .fl-section { padding-block: 24px; }
+  .fl-section-heading { gap: 8px; margin-bottom: 12px; }
+  .fl-section-heading h2 { font-size: clamp(22px, 7vw, 32px); line-height: 1.05; }
+  .fl-section-heading > p { font-size: 12px; line-height: 1.35; }
+  .fl-onboarding { padding-block: 22px; }
+  .fl-onboarding-grid { gap: 8px; }
+  .fl-onboarding-step { padding: 10px; }
+  .fl-onboarding-copy { gap: 3px; }
+  .fl-onboarding-copy h3 { font-size: 14px; }
+  .fl-onboarding-copy > p { font-size: 11px; line-height: 1.3; }
+}
+@keyframes fl-hero-ba-scroll { to { transform: translateX(calc(-50% - 4px)); } }
+@media (max-width: 520px) {
+  html, body, #root { max-width: 100%; overflow-x: hidden; }
+  .foodlab-page { overflow-x: hidden; }
+  .fl-shell { padding-inline: 14px; }
+  .fl-nav { min-width: 0; gap: 8px; padding-block: 14px; }
+  .fl-brand { min-width: 0; font-size: 16px; white-space: nowrap; }
+  .fl-navlinks { display: none; }
+  .fl-nav-cta { flex: 0 0 auto; padding: 9px 11px; font-size: 10px; white-space: nowrap; }
+  .fl-hero-copy { min-width: 0; }
+  .fl-hero-copy h1 { font-size: clamp(28px, 9vw, 38px); letter-spacing: -0.045em; }
+  .fl-hero-copy > p { max-width: 100%; font-size: 12px; line-height: 1.35; }
+  .fl-hero-actions { gap: 6px; }
+  .fl-hero-actions a { padding: 12px 12px; font-size: 11px; }
+  .fl-hero-ba-loop { max-width: 100%; overflow: hidden; }
+  .fl-hero-art { max-width: 100%; height: 148px; }
+  .fl-section { padding-block: 16px; }
+  .fl-section-heading { margin-bottom: 8px; }
+  .fl-onboarding { padding-block: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fl-hero-art img { animation: none; }
+}
 `;
 
 export default function FoodLabStudioPage() {
@@ -753,6 +878,17 @@ export default function FoodLabStudioPage() {
             <div className="fl-trust">
                             ✓ Sem fotógrafo &nbsp; ✓ Sem horas perdidas &nbsp;  
                           <b>✓ Sem cara de IA</b>           {" "}
+            </div>
+            <div className="fl-hero-ba-loop" aria-label="Exemplos antes e depois">
+              <div className="fl-hero-ba-track">
+                {[...beforeAfterExamples, ...beforeAfterExamples].map((example, index) => (
+                  <div className="fl-hero-ba-card" key={`${example.id}-hero-${index}`}>
+                    <img src={example.before} alt="" />
+                    <span>→</span>
+                    <img src={example.after} alt="" />
+                  </div>
+                ))}
+              </div>
             </div>
                      {" "}
           </div>
