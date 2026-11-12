@@ -15,13 +15,127 @@ type PromptItem = {
   img: string;
 };
 
+const redMinimalBurgerPrompt = `# PROMPT 015 — RED MINIMAL BURGER | DESIGN PUBLICITÁRIO PREMIUM
+Utilize a fotografia enviada como referência visual obrigatória do produto e transforme-a em uma peça publicitária gastronômica profissional, com direção de arte minimalista, moderna, ousada e sofisticada.
+
+Crie uma composição inspirada em campanhas publicitárias de grandes marcas de fast-food, utilizando fundo vermelho intenso, tipografia monumental em tom creme, produto centralizado e uma mão humana segurando o alimento.
+
+A estética deve combinar fotografia gastronômica ultra-realista com design gráfico editorial de alto nível.
+
+**REGRA PRINCIPAL:** Preserve rigorosamente o produto original. A transformação deve acontecer no fundo, na composição, na iluminação e nos elementos gráficos, nunca nos ingredientes ou nas características físicas do alimento.
+
+## 1. PRESERVAÇÃO ABSOLUTA DO PRODUTO
+Identifique e isole o alimento principal da fotografia enviada.
+
+Preserve obrigatoriamente:
+
+- Todos os ingredientes originais.
+- Quantidades e disposição dos componentes.
+- Formato, tamanho e proporções reais.
+- Texturas naturais do pão, carne, queijo, molhos e acompanhamentos.
+- Cores reais dos ingredientes.
+- Espessura e organização das camadas.
+- Características físicas do produto.
+- Perspectiva original da fotografia.
+Não adicione, remova, substitua ou invente ingredientes.
+
+Não aumente artificialmente o recheio.
+
+Não crie queijo escorrendo, molhos ou outros componentes que não existam na imagem original.
+
+Não substitua o produto por um hambúrguer genérico gerado por inteligência artificial.
+
+Aplique apenas melhorias sutis de iluminação, nitidez, contraste e cores naturais.
+
+O alimento deve continuar visualmente fiel à fotografia enviada.
+
+## 2. FUNDO VERMELHO MINIMALISTA
+Substitua completamente o cenário original por um fundo publicitário vermelho intenso.
+
+Características:
+
+- Cor predominante: vermelho profundo, próximo de #C90020.
+- Superfície visual limpa e uniforme.
+- Textura extremamente discreta.
+- Leve variação tonal para criar profundidade.
+- Escurecimento suave na região inferior.
+- Ausência de objetos decorativos.
+- Atmosfera moderna, marcante e sofisticada.
+O fundo deve parecer parte de uma campanha publicitária profissional fotografada em estúdio.
+
+Evite texturas grunge, efeitos neon, partículas, fumaça ou elementos gráficos excessivos.
+
+## 3. TIPOGRAFIA MONUMENTAL SUPERIOR
+Na região superior da composição, crie um título publicitário extremamente destacado.
+
+Utilize tipografia sans-serif pesada, com aparência semelhante a:
+
+- Anton.
+- Montserrat Black.
+- Archivo Black.
+- Druk Heavy.
+- Helvetica Now Display Black.
+Características:
+
+- Letras maiúsculas.
+- Cor creme-claro, próxima de #FFF0C8.
+- Peso visual extremamente forte.
+- Espaçamento compacto.
+- Alinhamento centralizado.
+- Composição em duas linhas.
+- Ocupação de aproximadamente 75% a 90% da largura disponível.
+Caso o cliente forneça o nome do produto, utilize-o como título principal.
+
+Exemplo:
+
+TRIPLE BURGER
+
+Se o nome possuir apenas uma palavra, adapte a composição para manter o equilíbrio visual.
+
+Não invente nomes ou características do produto.
+
+## 4. SUBTÍTULO PUBLICITÁRIO
+Logo abaixo do título principal, crie uma frase curta de apoio.
+
+Características:
+
+- Tipografia creme-claro.
+- Fonte sans-serif arredondada ou editorial moderna.
+- Tamanho significativamente menor que o título.
+- Alinhamento centralizado.
+- Espaçamento equilibrado.
+- Linguagem visual descontraída e comercial.
+Utilize exclusivamente a frase fornecida pelo cliente.
+
+Se não houver subtítulo, mantenha o espaço limpo.
+
+Não invente slogans ou informações comerciais.
+
+## 5. PRODUTO SEGURADO POR UMA MÃO HUMANA
+Posicione o produto na região central da composição, sendo segurado por uma mão humana realista.
+
+A mão deve entrar pela lateral inferior esquerda da imagem e sustentar naturalmente o alimento.
+
+Características da mão:
+
+- Anatomia humana correta.
+- Dedos com proporções anatômicas coerentes.
+- Pele com textura natural.
+- Proporções realistas em relação ao produto.
+- Sombras de contato naturais.
+- Posição fisicamente plausível.
+- Aparência fotográfica ultra-realista.
+
+---
+FOODLAB STUDIO / BIBLIOTECA GASTRONÔMICA`;
+
 const prompts: PromptItem[] = [
   {
     id: 13,
 
     name: "Hambúrguer Clássico em Destaque Retro",
 
-    text: "",
+    text: redMinimalBurgerPrompt,
 
     category: "FoodLab",
 
@@ -65,24 +179,8 @@ const prompts: PromptItem[] = [
 
 const galleryExamples = [
   {
-    name: "Diva Retrô com Hambúrguer no Diner",
-    img: "/portfolio/media/imagens/Diva Retrô com Hambúrguer no Diner.webp",
-  },
-  {
-    name: "Mulher saboreando hambúrguer artesanal",
-    img: "/portfolio/media/imagens/Mulher saboreando hambúrguer artesanal.webp",
-  },
-  {
     name: "Hambúrguer Artesanal em Foco",
     img: "/portfolio/media/imagens/Hambúrguer Artesanal em Foco.webp",
-  },
-  {
-    name: "Cheesebúrguer suculento em destaque",
-    img: "/portfolio/media/imagens/Cheesebúrguer suculento em destaque.webp",
-  },
-  {
-    name: "Hambúrguer Explosivo com Queijo Derretido",
-    img: "/portfolio/media/imagens/Hambúrguer Explosivo com Queijo Derretido.webp",
   },
 ];
 
@@ -120,6 +218,235 @@ const beforeAfterExamples = [
     description: "Uma nova direção para apresentar o mesmo tipo de produto.",
   },
 ];
+
+type BeforeAfterExample = (typeof beforeAfterExamples)[number];
+
+function BeforeAfterComparison({
+  example,
+  onPreview,
+  isClone = false,
+}: {
+  example: BeforeAfterExample;
+  onPreview: (src: string, alt: string) => void;
+  isClone?: boolean;
+}) {
+  const [position, setPosition] = useState(50);
+  const imagePreviewProps = (src: string, alt: string) => ({
+    role: "button" as const,
+    tabIndex: 0,
+    onClick: () => onPreview(src, alt),
+    onKeyDown: (event: React.KeyboardEvent<HTMLImageElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onPreview(src, alt);
+      }
+    },
+  });
+
+  return (
+    <article className="fl-ba-card" aria-hidden={isClone || undefined}>
+      <div className="fl-ba-images">
+        <img
+          {...imagePreviewProps(
+            example.before,
+            `Antes — ${example.title}`,
+          )}
+          className="fl-ba-photo"
+          tabIndex={isClone ? -1 : 0}
+          src={example.before}
+          alt={`Antes — ${example.title}`}
+          loading="lazy"
+        />
+        <div
+          className="fl-ba-after"
+          style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+        >
+          <img
+            {...imagePreviewProps(
+              example.after,
+              `Depois — ${example.title}`,
+            )}
+            className="fl-ba-photo"
+            tabIndex={isClone ? -1 : 0}
+            src={example.after}
+            alt={`Depois — ${example.title}`}
+            loading="lazy"
+          />
+        </div>
+        <span className="fl-ba-label">ANTES</span>
+        <span className="fl-ba-label after">DEPOIS</span>
+        <input
+          className="fl-ba-range"
+          type="range"
+          min="0"
+          max="100"
+          tabIndex={isClone ? -1 : 0}
+          value={position}
+          aria-label={`Revelar imagem Depois — ${example.title}`}
+          aria-valuetext={`${position}% da imagem Depois visível`}
+          onChange={(event) => setPosition(Number(event.target.value))}
+        />
+        <span
+          className="fl-ba-divider"
+          style={{ left: `${position}%` }}
+          aria-hidden="true"
+        >
+          <span />
+        </span>
+      </div>
+      <div className="fl-ba-caption">
+        <strong>{example.title}</strong>
+        {example.description}
+      </div>
+    </article>
+  );
+}
+
+function useDraggableAutoscroll() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const track = container?.firstElementChild;
+    if (!(container instanceof HTMLElement) || !(track instanceof HTMLElement)) {
+      return;
+    }
+
+    let activePointerId: number | null = null;
+    let animation: Animation | null = null;
+    let startX = 0;
+    let startTime = 0;
+    let duration = 0;
+    let cycleWidth = 0;
+    let dragStartOffset = 0;
+    let manualOffset = 0;
+    let isManualDrag = false;
+    let hasMoved = false;
+    let suppressClick = false;
+    let clickSuppressionTimer: number | undefined;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerId !== activePointerId || !isManualDrag) return;
+
+      const deltaX = event.clientX - startX;
+      if (Math.abs(deltaX) > 5) hasMoved = true;
+
+      if (animation) {
+        const nextTime = startTime - (deltaX / cycleWidth) * duration;
+        animation.currentTime =
+          ((nextTime % duration) + duration) % duration;
+      } else {
+        const nextOffset = dragStartOffset + deltaX;
+        const wrappedOffset =
+          ((nextOffset % cycleWidth) + cycleWidth) % cycleWidth;
+        manualOffset = wrappedOffset === 0 ? 0 : wrappedOffset - cycleWidth;
+        track.style.transform = `translateX(${manualOffset}px)`;
+      }
+
+      event.preventDefault();
+    };
+
+    const handlePointerFinish = (event: PointerEvent) => {
+      if (event.pointerId !== activePointerId) return;
+
+      activePointerId = null;
+      container.classList.remove("is-dragging");
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerFinish);
+      window.removeEventListener("pointercancel", handlePointerFinish);
+      animation?.play();
+      animation = null;
+
+      if (isManualDrag && hasMoved) {
+        suppressClick = true;
+        clickSuppressionTimer = window.setTimeout(() => {
+          suppressClick = false;
+          clickSuppressionTimer = undefined;
+        }, 0);
+      }
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (activePointerId !== null) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+
+      const isRangeInput =
+        event.target instanceof Element &&
+        event.target.closest('input[type="range"]') !== null;
+      const runningAnimation = track.getAnimations().find((candidate) => {
+        const effectDuration = candidate.effect?.getTiming().duration;
+        return (
+          candidate.playState !== "idle" &&
+          typeof effectDuration === "number" &&
+          effectDuration > 0
+        );
+      });
+      const effectDuration = runningAnimation?.effect?.getTiming().duration;
+      const parsedGap = Number.parseFloat(
+        window.getComputedStyle(track).columnGap,
+      );
+      const gap = Number.isFinite(parsedGap) ? parsedGap : 0;
+      const period = track.getBoundingClientRect().width / 2 + gap / 2;
+      if (period <= 0 || (runningAnimation && typeof effectDuration !== "number")) {
+        return;
+      }
+
+      activePointerId = event.pointerId;
+      animation = runningAnimation ?? null;
+      duration =
+        typeof effectDuration === "number" ? effectDuration : 0;
+      const currentTime = Number(animation?.currentTime ?? 0);
+      startTime = duration
+        ? ((currentTime % duration) + duration) % duration
+        : 0;
+      startX = event.clientX;
+      cycleWidth = period;
+      dragStartOffset = manualOffset;
+      isManualDrag = !isRangeInput;
+      hasMoved = false;
+
+      animation?.pause();
+      if (isManualDrag) {
+        container.classList.add("is-dragging");
+      }
+
+      window.addEventListener("pointermove", handlePointerMove, {
+        passive: false,
+      });
+      window.addEventListener("pointerup", handlePointerFinish);
+      window.addEventListener("pointercancel", handlePointerFinish);
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (!suppressClick) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      suppressClick = false;
+      if (clickSuppressionTimer !== undefined) {
+        window.clearTimeout(clickSuppressionTimer);
+      }
+      clickSuppressionTimer = undefined;
+    };
+
+    container.addEventListener("pointerdown", handlePointerDown);
+    container.addEventListener("click", handleClick, true);
+
+    return () => {
+      container.removeEventListener("pointerdown", handlePointerDown);
+      container.removeEventListener("click", handleClick, true);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerFinish);
+      window.removeEventListener("pointercancel", handlePointerFinish);
+      container.classList.remove("is-dragging");
+      if (clickSuppressionTimer !== undefined) {
+        window.clearTimeout(clickSuppressionTimer);
+      }
+    };
+  }, []);
+
+  return containerRef;
+}
 
 const steps = [
   {
@@ -250,7 +577,6 @@ const styles = `
 .fl-ba-grid { cursor: grab; touch-action: pan-y; }
 .fl-ba-grid:active { cursor: grabbing; }
 .fl-ba-track { display: flex; width: max-content; gap: var(--fl-ba-gap); animation: fl-before-after-scroll 30s linear infinite; will-change: transform; }
-.fl-ba-grid:hover .fl-ba-track { animation-play-state: paused; }
 @keyframes fl-before-after-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-50% - var(--fl-ba-gap) / 2)); } }
 @media (prefers-reduced-motion: reduce) { .fl-ba-track { animation: none; } }
 .fl-ba-card { flex: 0 0 min(390px, 82vw); scroll-snap-align: start; min-width: 0; overflow: hidden; border: 1px solid var(--stroke); border-radius: 20px; background: var(--bg); box-shadow: 0 12px 30px #00000018; color: var(--text); }
@@ -381,7 +707,7 @@ const styles = `
 .fl-hero-art img:first-of-type { animation-delay: -4s; }
 @keyframes fl-hero-slide {
   0%, 42% { opacity: 1; transform: scale(1); }
-  50%, 92% { opacity: .18; transform: scale(1.045); }
+  50%, 92% { opacity: .7; transform: scale(1.02); }
   100% { opacity: 1; transform: scale(1); }
 }
 
@@ -440,7 +766,7 @@ const styles = `
   .fl-onboarding-copy h3 { font-size: 14px; }
   .fl-onboarding-copy > p { font-size: 11px; line-height: 1.3; }
 }
-@keyframes fl-hero-ba-scroll { to { transform: translateX(calc(-50% - 4px)); } }
+@keyframes fl-hero-ba-scroll { to { transform: translateX(calc(-50% - var(--fl-hero-ba-gap, 4px) / 2)); } }
 @media (max-width: 520px) {
   html, body, #root { max-width: 100%; overflow-x: hidden; }
   .foodlab-page { overflow-x: hidden; }
@@ -1445,9 +1771,328 @@ button.fl-prompt-action::after {
   }
 }
 
+/* FoodLab comparisons use a real reveal slider; keep every source photo intact. */
+html:has(.foodlab-page),
+body:has(.foodlab-page),
+#root:has(.foodlab-page) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.reveal {
+  transform: translateY(12px);
+  transition: opacity .42s ease, transform .42s ease;
+}
+.fl-ba-grid {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 14px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  touch-action: pan-x pan-y;
+  cursor: auto;
+}
+.fl-ba-track {
+  display: flex;
+  width: max-content;
+  gap: var(--fl-ba-gap, 16px);
+  padding: 0;
+  animation: fl-before-after-scroll 48s linear infinite;
+  will-change: transform;
+}
+.fl-ba-card {
+  flex: 0 0 min(760px, 88vw);
+  scroll-snap-align: start;
+}
+.fl-ba-images {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  overflow: hidden;
+  background: #141614;
+}
+.fl-ba-photo,
+.fl-ba-after img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  background: transparent;
+}
+.fl-ba-after {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.fl-ba-label {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  order: 0;
+  padding: 8px 10px;
+  border: 1px solid #ffffff30;
+  border-radius: 8px;
+  background: #101210dc;
+  color: #fff;
+  font-size: 11px;
+}
+.fl-ba-label.after {
+  right: 12px;
+  left: auto;
+  color: #ff9a67;
+}
+.fl-ba-range {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  transform: translateY(-50%);
+  opacity: .001;
+  cursor: ew-resize;
+  touch-action: none;
+}
+.fl-ba-divider {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: #fff;
+  pointer-events: none;
+}
+.fl-ba-divider > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #1b130e;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 2px 12px #0008;
+}
+.fl-ba-divider > span::before {
+  content: "↔";
+}
+.fl-ba-range:focus-visible + .fl-ba-divider > span {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.fl-nav > .fl-nav-cta,
+button.fl-prompt-action,
+.fl-nav > .fl-nav-cta::after,
+button.fl-prompt-action::after {
+  animation: none;
+}
+.fl-gallery {
+  grid-template-rows: repeat(2, minmax(270px, 1fr));
+}
+.fl-gallery-item img {
+  object-fit: contain;
+  background: #141614;
+}
+.fl-ba-grid,
+.fl-gallery,
+.fl-hero-ba-loop {
+  scrollbar-width: none;
+}
+.fl-ba-grid::-webkit-scrollbar,
+.fl-gallery::-webkit-scrollbar,
+.fl-hero-ba-loop::-webkit-scrollbar {
+  display: none;
+}
+@media (max-width: 720px) {
+  .fl-hero-art {
+    width: min(100%, 360px);
+    height: clamp(190px, 58vw, 220px);
+    transform: none;
+  }
+  .fl-hero-art img {
+    animation-duration: 5s;
+  }
+  .fl-hero-ba-loop {
+    overflow: hidden;
+    overflow-y: hidden;
+    touch-action: pan-y;
+  }
+  .fl-hero-ba-track {
+    width: max-content;
+    animation: fl-hero-ba-scroll 30s linear infinite;
+    will-change: transform;
+  }
+  .fl-hero-ba-card {
+    scroll-snap-align: start;
+  }
+  .fl-ba-card {
+    flex-basis: min(760px, calc(100vw - 42px));
+  }
+  .fl-ba-images {
+    aspect-ratio: 1.35;
+  }
+  .fl-gallery {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 0 12px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    touch-action: pan-x;
+  }
+  .fl-gallery-item {
+    flex: 0 0 min(82vw, 360px);
+    aspect-ratio: 4 / 5;
+    scroll-snap-align: start;
+  }
+  .fl-gallery-item:first-child {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fl-hero-ba-track {
+    animation: none;
+  }
+  .fl-ba-track {
+    animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+  }
+  .fl-ba-grid,
+  .fl-gallery {
+    scroll-behavior: auto;
+  }
+}
+
+.fl-hero-ba-loop,
+.fl-ba-grid {
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fl-hero-ba-loop {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+.fl-hero-ba-track {
+  --fl-hero-ba-gap: 8px;
+  display: flex;
+  width: max-content;
+  gap: var(--fl-hero-ba-gap);
+  animation: fl-hero-ba-scroll 30s linear infinite;
+  will-change: transform;
+}
+.fl-ba-grid.is-dragging,
+.fl-hero-ba-loop.is-dragging {
+  cursor: grabbing;
+}
+.fl-ba-grid.is-dragging .fl-ba-track,
+.fl-hero-ba-loop.is-dragging .fl-hero-ba-track {
+  animation-play-state: paused;
+}
+.fl-hero-ba-track img,
+.fl-ba-track img {
+  -webkit-user-drag: none;
+}
+
+#imagens-ia {
+  padding-block: 40px;
+}
+#imagens-ia .fl-section-heading {
+  margin-bottom: 20px;
+}
+#imagens-ia .fl-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+  justify-items: center;
+  gap: 0;
+  overflow: visible;
+  padding: 0;
+}
+#imagens-ia .fl-gallery-item {
+  width: min(100%, 520px);
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+#imagens-ia .fl-gallery-item:first-child {
+  grid-column: auto;
+  grid-row: auto;
+}
+#imagens-ia .fl-gallery-item img {
+  object-fit: cover;
+  background: transparent;
+}
+#imagens-ia .fl-gallery-item span {
+  left: 10px;
+  bottom: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 9px;
+  letter-spacing: .5px;
+}
+@media (max-width: 720px) {
+  #comparacao .fl-showcase-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  #comparacao .fl-showcase-card,
+  #comparacao .fl-showcase-card:first-child {
+    grid-column: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+  #comparacao .fl-showcase-card img {
+    object-position: center 55%;
+  }
+  #comparacao .fl-showcase-card::after {
+    inset: 45% 0 0;
+  }
+  #comparacao .fl-showcase-copy {
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+  }
+  #comparacao .fl-showcase-copy h3 {
+    margin: 6px 0 0;
+    font-size: clamp(17px, 5vw, 21px);
+    line-height: 1.1;
+  }
+  #imagens-ia {
+    padding-block: 26px;
+  }
+}
+
 `;
 
 export default function FoodLabStudioPage() {
+  const heroAutoscrollRef = useDraggableAutoscroll();
+  const comparisonAutoscrollRef = useDraggableAutoscroll();
   const [query, setQuery] = useState("");
 
   const [category, setCategory] = useState("Todos");
@@ -1463,12 +2108,6 @@ export default function FoodLabStudioPage() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">(
     "idle",
   );
-  const beforeAfterTrackRef = useRef<HTMLDivElement>(null);
-  const beforeAfterDragRef = useRef({
-    active: false,
-    startX: 0,
-    startTranslateX: 0,
-  });
 
   const [brand, setBrand] = useState("");
   const [product, setProduct] = useState("");
@@ -1533,6 +2172,32 @@ export default function FoodLabStudioPage() {
           .join("\n")}`
       : "";
 
+    if (selectedPrompt.id === 13) {
+      const providedDetails = [
+        ["Nome da marca", brand],
+        ["Produto", product],
+        ["Frase ou oferta", headline],
+        ["Preço", price ? `R$ ${price}` : ""],
+        ["Formato final", format === "4:5 — Feed Instagram" ? "" : format],
+        [
+          "Estilo visual",
+          visualStyle === "Editorial gastronômico premium" ? "" : visualStyle,
+        ],
+        [
+          "Sensação desejada",
+          sensation === "Desejo, fome e proximidade" ? "" : sensation,
+        ],
+        ["Gatilho principal", trigger === "Textura e apetite" ? "" : trigger],
+      ].filter(([, value]) => value.trim());
+      const providedDetailsBlock = providedDetails.length
+        ? `\n\nDADOS INFORMADOS PELO CLIENTE\n${providedDetails
+            .map(([label, value]) => `${label}: ${value}`)
+            .join("\n")}`
+        : "";
+
+      return `${selectedPrompt.text}${providedDetailsBlock}`;
+    }
+
     return `${selectedPrompt.text}${detailBlock}\n\nELEMENTAÇÃO VISUAL\n- Formato: ${format}\n- Organize a composição com hierarquia clara: produto em primeiro plano, área de respiro e texto legível.\n- Preserve textura, volume, iluminação natural e aparência realista.\n- Quebre o texto em parágrafos curtos, com leitura rápida e foco na conversão.\n\nENTREGA\nCrie uma imagem gastronômica premium, coerente com a marca e pronta para publicação. Não invente ingredientes, preços, logotipos ou informações que não foram fornecidos.`;
   }, [
     selectedPrompt,
@@ -1583,6 +2248,8 @@ export default function FoodLabStudioPage() {
 
       return;
     }
+
+    if (!("IntersectionObserver" in window)) return;
 
     const els = Array.from(
       document.querySelectorAll(
@@ -1650,50 +2317,6 @@ export default function FoodLabStudioPage() {
         ? current.filter((item) => item !== id)
         : [...current, id],
     );
-  };
-
-  const handleBeforeAfterPointerDown = (
-    event: React.PointerEvent<HTMLDivElement>,
-  ) => {
-    if (event.button !== 0 || !beforeAfterTrackRef.current) return;
-
-    const track = beforeAfterTrackRef.current;
-    const computedTransform = window.getComputedStyle(track).transform;
-    const currentTranslateX =
-      computedTransform === "none"
-        ? 0
-        : new DOMMatrixReadOnly(computedTransform).m41;
-
-    track.style.animation = "none";
-    track.style.transform = `translate3d(${currentTranslateX}px, 0, 0)`;
-    beforeAfterDragRef.current = {
-      active: true,
-      startX: event.clientX,
-      startTranslateX: currentTranslateX,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const handleBeforeAfterPointerMove = (
-    event: React.PointerEvent<HTMLDivElement>,
-  ) => {
-    const drag = beforeAfterDragRef.current;
-    const track = beforeAfterTrackRef.current;
-    if (!drag.active || !track) return;
-
-    const translateX = drag.startTranslateX + event.clientX - drag.startX;
-    track.style.transform = `translate3d(${translateX}px, 0, 0)`;
-  };
-
-  const handleBeforeAfterPointerUp = (
-    event: React.PointerEvent<HTMLDivElement>,
-  ) => {
-    if (!beforeAfterDragRef.current.active) return;
-
-    beforeAfterDragRef.current.active = false;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
   };
 
   const openPrompt = (item: PromptItem) => {
@@ -1819,7 +2442,13 @@ export default function FoodLabStudioPage() {
             </div>{" "}
             <span className="fl-image-stamp">ANTES </span>{" "}
           </div>
-          <div className="fl-hero-ba-loop" aria-label="Exemplos antes e depois">
+          <div
+            ref={heroAutoscrollRef}
+            className="fl-hero-ba-loop"
+            role="region"
+            aria-label="Carrossel automático infinito. Segure e arraste para navegar."
+            tabIndex={0}
+          >
             <div className="fl-hero-ba-track">
               {[...beforeAfterExamples, ...beforeAfterExamples].map(
                 (example, index) => (
@@ -2096,54 +2725,29 @@ export default function FoodLabStudioPage() {
             </div>
             <p>Uma foto simples. Uma nova apresentação.</p>
           </div>
-          <div className="fl-ba-grid">
-            <div
-              ref={beforeAfterTrackRef}
-              className="fl-ba-track"
-              onPointerDown={handleBeforeAfterPointerDown}
-              onPointerMove={handleBeforeAfterPointerMove}
-              onPointerUp={handleBeforeAfterPointerUp}
-              onPointerCancel={handleBeforeAfterPointerUp}
-              aria-label="Arraste para navegar pelos exemplos antes e depois"
-            >
+          <div
+            ref={comparisonAutoscrollRef}
+            className="fl-ba-grid"
+            role="region"
+            aria-label="Carrossel automático infinito de comparações Antes e Depois. Segure e arraste para navegar."
+            tabIndex={0}
+          >
+            <div className="fl-ba-track">
               {[...beforeAfterExamples, ...beforeAfterExamples].map(
-                (example, index) => (
-                  <article
-                    className="fl-ba-card"
-                    key={`${example.id}-${index}`}
-                  >
-                    <div className="fl-ba-images">
-                      <div className="fl-ba-side">
-                        <img
-                          {...imagePreviewProps(
-                            example.before,
-                            `Antes — ${example.title}`,
-                          )}
-                          src={example.before}
-                          alt={`Antes — ${example.title}`}
-                          loading="lazy"
-                        />
-                        <span className="fl-ba-label">ANTES</span>
-                      </div>
-                      <div className="fl-ba-side">
-                        <img
-                          {...imagePreviewProps(
-                            example.after,
-                            `Depois — ${example.title}`,
-                          )}
-                          src={example.after}
-                          alt={`Depois — ${example.title}`}
-                          loading="lazy"
-                        />
-                        <span className="fl-ba-label after">DEPOIS</span>
-                      </div>
-                    </div>
-                    <div className="fl-ba-caption">
-                      <strong>{example.title}</strong>
-                      {example.description}
-                    </div>
-                  </article>
-                ),
+                (example, index) => {
+                  const isClone = index >= beforeAfterExamples.length;
+
+                  return (
+                    <BeforeAfterComparison
+                      key={`${example.id}-${isClone ? "clone" : "original"}`}
+                      example={example}
+                      isClone={isClone}
+                      onPreview={(src, alt) =>
+                        setPreviewImage({ src, alt })
+                      }
+                    />
+                  );
+                },
               )}
             </div>
           </div>
